@@ -19,7 +19,9 @@ export const createLoggerProviders = (config: AppConfig): Provider[] => [
     provide: LOGGER,
     useFactory: (config: AppConfig): AppLogger => ({
       log: (message) =>
-        console.log(`[${config.appName}] ${new Date().toISOString()} ${message}`),
+        console.log(
+          `[${config.appName}] ${new Date().toISOString()} ${message}`,
+        ),
     }),
     inject: [APP_CONFIG],
   },

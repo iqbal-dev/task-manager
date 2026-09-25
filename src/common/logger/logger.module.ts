@@ -1,5 +1,9 @@
 import { DynamicModule, Module } from '@nestjs/common';
-import { APP_CONFIG, LOGGER, createLoggerProviders } from './logger.provider.js';
+import {
+  APP_CONFIG,
+  LOGGER,
+  createLoggerProviders,
+} from './logger.provider.js';
 import type { AppConfig } from './logger.provider.js';
 
 @Module({})

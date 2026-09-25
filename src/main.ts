@@ -1,23 +1,20 @@
-import { ValidationPipe } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module.js';
-import { HttpExceptionFilter } from './common/http-exception/http-exception.filter.js';
-import { LoggingInterceptor } from './common/logging/logging.interceptor.js';
-import { TransformInterceptor } from './common/transform/transform.interceptor.js';
+import { configureApp } from './app.setup.js';
+import type { AppConfig } from './config/configuration.js';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  configureApp(app);
 
-  app.useGlobalFilters(new HttpExceptionFilter());
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true, // DTO-te thakena emon field strip kore dey
-      forbidNonWhitelisted: true, // extra field pathale error dey
-    }),
+  const config = app.get(ConfigService<AppConfig, true>);
+  const port = config.get('port', { infer: true });
+  await app.listen(port);
+  Logger.log(
+    `Listening on :${port} (${config.get('nodeEnv', { infer: true })})`,
+    'Bootstrap',
   );
-
-  app.useGlobalInterceptors(new LoggingInterceptor());
-  app.useGlobalInterceptors(new TransformInterceptor());
-  await app.listen(process.env.PORT ?? 3000);
 }
 await bootstrap();
