@@ -41,6 +41,23 @@ export class UsersService {
     const { password: _password, ...safeUser } = newUser;
     return safeUser;
   }
+  async update(id: number, user: Partial<CreateUserDto>): Promise<SafeUser> {
+    const existingUser = this.users.find((user) => user.id === id);
+    if (!existingUser) {
+      throw new NotFoundException(`User with id ${id} not found`);
+    }
+    const updatedUser: User = {
+      ...existingUser,
+      ...user,
+      password: user.password
+        ? await this.hashingService.hash(user.password)
+        : existingUser.password,
+    };
+    const index = this.users.findIndex((user) => user.id === id);
+    this.users[index] = updatedUser;
+    const { password: _password, ...safeUser } = updatedUser;
+    return safeUser;
+  }
   findOne(id: number): SafeUser {
     const user = this.users.find((user) => user.id === id);
     if (!user) {

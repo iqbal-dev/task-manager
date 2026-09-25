@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto.js';
@@ -24,5 +25,13 @@ export class UsersController {
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findOne(id);
+  }
+
+  @Patch(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() payload: Partial<CreateUserDto>,
+  ) {
+    return this.usersService.update(id, payload);
   }
 }
