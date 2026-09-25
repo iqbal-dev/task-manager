@@ -12,13 +12,13 @@ export class UsersService {
       id: 1,
       name: 'John Doe',
       email: 'john.doe@example.com',
-      password: 'password123',
+      password: '',
     },
     {
       id: 2,
       name: 'Jane Smith',
       email: 'jane.smith@example.com',
-      password: 'password456',
+      password: '',
     },
   ];
   create(user: CreateUserDto): CreateUserDto {
