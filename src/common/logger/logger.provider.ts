@@ -11,12 +11,9 @@ export interface AppLogger {
   log(message: string): void;
 }
 
-export const loggerProviders: Provider[] = [
-  // value provider: a plain object under a custom token
-  {
-    provide: APP_CONFIG,
-    useValue: { appName: 'task-manager' } satisfies AppConfig,
-  },
+export const createLoggerProviders = (config: AppConfig): Provider[] => [
+  // value provider: the options passed to LoggerModule.forRoot()
+  { provide: APP_CONFIG, useValue: config },
   // factory provider: built at startup, with APP_CONFIG injected into the factory
   {
     provide: LOGGER,
