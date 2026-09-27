@@ -18,6 +18,8 @@ export interface AppConfig {
     ttl: number;
     limit: number;
   };
+  /** Existing account granted the admin role at boot. */
+  adminEmail: string | undefined;
 }
 
 export default (): AppConfig => ({
@@ -40,4 +42,5 @@ export default (): AppConfig => ({
     ttl: parseInt(process.env.THROTTLE_TTL_MS ?? '60000', 10),
     limit: parseInt(process.env.THROTTLE_LIMIT ?? '100', 10),
   },
+  adminEmail: process.env.ADMIN_EMAIL || undefined,
 });

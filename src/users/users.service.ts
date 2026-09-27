@@ -6,6 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { HashingService } from '../common/hashing/hashing.service.js';
+import { DEFAULT_ROLE, RolesService } from '../roles/roles.service.js';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
 import { User } from './entities/user.entity.js';
@@ -18,14 +19,17 @@ export class UsersService {
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
     private readonly hashingService: HashingService,
+    private readonly rolesService: RolesService,
   ) {}
 
   async create(dto: CreateUserDto): Promise<User> {
     await this.assertEmailAvailable(dto.email);
+    const defaultRole = await this.rolesService.findByName(DEFAULT_ROLE);
     const user = this.usersRepository.create({
       name: dto.name,
       email: dto.email,
       password: await this.hashingService.hash(dto.password),
+      roles: defaultRole ? [defaultRole] : [],
     });
     return this.persist(user);
   }

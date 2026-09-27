@@ -13,6 +13,8 @@ import type { AppConfig } from './config/configuration.js';
 import { envValidationSchema } from './config/env.validation.js';
 import { DatabaseModule } from './database/database.module.js';
 import { HealthModule } from './health/health.module.js';
+import { PermissionsGuard } from './roles/guards/permissions.guard.js';
+import { RolesModule } from './roles/roles.module.js';
 import { TasksModule } from './tasks/tasks.module.js';
 import { UsersModule } from './users/users.module.js';
 
@@ -36,14 +38,16 @@ import { UsersModule } from './users/users.module.js';
     AuthModule,
     UsersModule,
     TasksModule,
+    RolesModule,
     HealthModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    // Order matters: throttle first, then authenticate.
+    // Order matters: throttle, authenticate, then authorize.
     { provide: APP_GUARD, useClass: ThrottlerGuard },
     { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: PermissionsGuard },
   ],
 })
 export class AppModule implements NestModule {
